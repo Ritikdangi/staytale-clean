@@ -6,6 +6,9 @@ StayTale - Travel & Tourism Management System"
 A full-stack MERN (MongoDB, Express.js, React.js, Node.js) application for travel and tourism management with admin panel, user authentication, package booking, and payment integration.
 
 ## 📸 Screenshots
+<img width="1904" height="920" alt="image" src="https://github.com/user-attachments/assets/eefc0c78-7c14-4cc6-b979-cee1a1450adb" />
+<img width="1892" height="915" alt="image" src="https://github.com/user-attachments/assets/f9a30956-5c99-47cc-812d-647a851349fc" />
+<img width="1912" height="923" alt="image" src="https://github.com/user-attachments/assets/1dc4401a-c5a6-494c-bd1b-da88a0077be7" />
 
 
 ## ✨ Features
