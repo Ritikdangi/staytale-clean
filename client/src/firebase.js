@@ -1,7 +1,7 @@
 // firebase.js
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 
 // Your web app's Firebase configuration using environment variables
 const firebaseConfig = {
@@ -16,5 +16,18 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
+
+// Initialize Analytics only if supported and not blocked
+let analytics = null;
+isSupported().then((supported) => {
+  if (supported) {
+    try {
+      analytics = getAnalytics(app);
+    } catch (error) {
+      console.warn("Firebase Analytics could not be initialized:", error);
+    }
+  }
+});
+
+export { analytics };
 export const storage = getStorage(app); // Export storage to use it in your components
