@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router";
 import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Booking = () => {
   const { currentUser } = useSelector((state) => state.user);
   const params = useParams();
@@ -77,7 +79,9 @@ const Booking = () => {
   //get paymentgateway token
   const getToken = async () => {
     try {
-      const { data } = await axios.get(`/api/package/braintree/token`);
+      const { data } = await axios.get(`${API_URL}/api/package/braintree/token`, {
+        withCredentials: true,
+      });
       setClientToken(data?.clientToken);
     } catch (error) {
       console.log(error);
@@ -101,12 +105,13 @@ const Booking = () => {
     }
     try {
       setLoading(true);
-      const res = await fetch(`/api/booking/book-package/${params?.id}`, {
+      const res = await fetch(`${API_URL}/api/booking/book-package/${params?.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bookingData),
+        credentials: "include",
       });
       const data = await res.json();
       if (data?.success) {

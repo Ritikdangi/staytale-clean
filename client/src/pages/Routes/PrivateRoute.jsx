@@ -3,12 +3,14 @@ import { useSelector } from "react-redux";
 import { Outlet, Navigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function PrivateRoute() {
   const { currentUser } = useSelector((state) => state.user);
   const [ok, setOk] = useState(false);
 
   const authCheck = async () => {
-    const res = await fetch("/api/user/user-auth", {
+    const res = await fetch(`${API_URL}/api/user/user-auth`, {
       method: "GET",
       headers: {
         Accept: "application/json",

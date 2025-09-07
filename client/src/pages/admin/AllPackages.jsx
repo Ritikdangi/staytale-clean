@@ -69,6 +69,7 @@ const AllPackages = () => {
       setLoading(true);
       const res = await fetch(`${API_URL}/api/package/delete-package/${packageId}`, {
         method: "DELETE",
+        credentials: "include",
       });
       const data = await res.json();
       alert(data?.message);

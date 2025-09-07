@@ -9,6 +9,8 @@ import {
   updatePassFailure,
 } from "../../redux/user/userSlice";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const UpdateProfile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -65,12 +67,13 @@ const UpdateProfile = () => {
     }
     try {
       dispatch(updateUserStart());
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+      const res = await fetch(`${API_URL}/api/user/update/${currentUser._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success === false && res.status !== 201 && res.status !== 200) {
@@ -107,12 +110,13 @@ const UpdateProfile = () => {
     }
     try {
       dispatch(updatePassStart());
-      const res = await fetch(`/api/user/update-password/${currentUser._id}`, {
+      const res = await fetch(`${API_URL}/api/user/update-password/${currentUser._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatePassword),
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success === false && res.status !== 201 && res.status !== 200) {

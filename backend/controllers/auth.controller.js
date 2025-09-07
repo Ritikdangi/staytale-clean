@@ -89,11 +89,19 @@ export const loginController = async (req, res) => {
     );
     
     const { password: pass, ...rest } = validUser._doc; // Deselect password to send user data
+    // Cookie configuration for both local and production
+    const isProduction = process.env.NODE_ENV_CUSTOM === 'production';
+    const cookieOptions = {
+      httpOnly: true,
+      maxAge: 4 * 24 * 60 * 60 * 1000, // 4 days
+      sameSite: isProduction ? 'none' : 'lax',
+      secure: isProduction,
+      // Don't set domain for local development - let browser handle it
+      path: '/'
+    };
+
     res
-      .cookie("X_TTMS_access_token", token, {
-        httpOnly: true,
-        maxAge: 4 * 24 * 60 * 60 * 1000,
-      })
+      .cookie("X_TTMS_access_token", token, cookieOptions)
       .status(200)
       .send({
         success: true,
@@ -112,7 +120,17 @@ export const loginController = async (req, res) => {
 // Logout controller
 export const logOutController = (req, res) => {
   try {
-    res.clearCookie("X_TTMS_access_token");
+    // Clear cookie with same options as login
+    const isProduction = process.env.NODE_ENV_CUSTOM === 'production';
+    const cookieOptions = {
+      httpOnly: true,
+      sameSite: isProduction ? 'none' : 'lax',
+      secure: isProduction,
+      // Don't set domain for local development - let browser handle it
+      path: '/'
+    };
+    
+    res.clearCookie("X_TTMS_access_token", cookieOptions);
     res.status(200).send({
       success: true,
       message: "Logged out successfully",

@@ -70,6 +70,7 @@ const AdminUpdateProfile = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success === false && res.status !== 201 && res.status !== 200) {
@@ -112,6 +113,7 @@ const AdminUpdateProfile = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatePassword),
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success === false && res.status !== 201 && res.status !== 200) {

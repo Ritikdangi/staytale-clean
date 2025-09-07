@@ -13,12 +13,18 @@ console.log('Private Key:', process.env.BRAINTREE_PRIVATE_KEY);
 // Initialize Braintree gateway only if environment variables are available
 let gateway = null;
 if (process.env.BRAINTREE_MERCHANT_ID && process.env.BRAINTREE_PUBLIC_KEY && process.env.BRAINTREE_PRIVATE_KEY) {
-  gateway = new braintree.BraintreeGateway({
-    environment: braintree.Environment.Sandbox,
-    merchantId: process.env.BRAINTREE_MERCHANT_ID,
-    publicKey: process.env.BRAINTREE_PUBLIC_KEY,
-    privateKey: process.env.BRAINTREE_PRIVATE_KEY,
-  });
+  try {
+    gateway = new braintree.BraintreeGateway({
+      environment: braintree.Environment.Sandbox,
+      merchantId: process.env.BRAINTREE_MERCHANT_ID,
+      publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+      privateKey: process.env.BRAINTREE_PRIVATE_KEY,
+    });
+    console.log('Braintree gateway initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Braintree gateway:', error.message);
+    gateway = null;
+  }
 } else {
   console.warn('Braintree credentials not found. Payment functionality will be disabled.');
 }
@@ -189,7 +195,7 @@ export const deletePackage = async (req, res) => {
       message: "Package Deleted!",
     });
   } catch (error) {
-    cnsole.log(error);
+    console.log(error);
   }
 };
 
@@ -197,21 +203,43 @@ export const deletePackage = async (req, res) => {
 //token
 export const braintreeTokenController = async (req, res) => {
   try {
+    console.log('Braintree Token Request - Environment Variables:');
+    console.log('BRAINTREE_MERCHANT_ID:', process.env.BRAINTREE_MERCHANT_ID ? 'SET' : 'NOT SET');
+    console.log('BRAINTREE_PUBLIC_KEY:', process.env.BRAINTREE_PUBLIC_KEY ? 'SET' : 'NOT SET');
+    console.log('BRAINTREE_PRIVATE_KEY:', process.env.BRAINTREE_PRIVATE_KEY ? 'SET' : 'NOT SET');
+    
     if (!gateway) {
+      console.error('Braintree gateway not initialized');
       return res.status(500).send({
         success: false,
         message: "Payment gateway not configured. Please set up Braintree credentials in .env file.",
+        debug: {
+          merchantId: process.env.BRAINTREE_MERCHANT_ID ? 'SET' : 'NOT SET',
+          publicKey: process.env.BRAINTREE_PUBLIC_KEY ? 'SET' : 'NOT SET',
+          privateKey: process.env.BRAINTREE_PRIVATE_KEY ? 'SET' : 'NOT SET'
+        }
       });
     }
     
     gateway.clientToken.generate({}, function (err, response) {
       if (err) {
-        res.status(500).send(err);
+        console.error('Braintree token generation error:', err);
+        res.status(500).send({
+          success: false,
+          message: "Failed to generate payment token",
+          error: err.message
+        });
       } else {
+        console.log('Braintree token generated successfully');
         res.send(response);
       }
     });
   } catch (error) {
-    console.log(error);
+    console.error('Braintree token controller error:', error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
   }
 };

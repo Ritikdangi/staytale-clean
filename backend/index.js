@@ -12,11 +12,32 @@ import cors from "cors";
 const app = express();
 dotenv.config();
 
-const allowedOrigin = process.env.ALLOWED_ORIGIN || "http://localhost:5173";
+// CORS configuration - supports both local and production
+const allowedOrigins = process.env.ALLOWED_ORIGIN 
+  ? process.env.ALLOWED_ORIGIN.split(',').map(origin => origin.trim())
+  : ["http://localhost:5173", "https://staytale-clean.vercel.app"];
+
+console.log("Environment:", process.env.NODE_ENV_CUSTOM);
+console.log("Allowed origins:", allowedOrigins);
+
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: function (origin, callback) {
+      console.log("Request origin:", origin);
+      
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        console.log("✅ Origin allowed:", origin);
+        return callback(null, true);
+      } else {
+        console.log("❌ Origin blocked:", origin);
+        return callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    optionsSuccessStatus: 200 // For legacy browser support
   })
 );
 

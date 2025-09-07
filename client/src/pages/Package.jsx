@@ -59,7 +59,9 @@ const Package = () => {
   const getPackageData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/api/package/get-package-data/${params?.id}`);
+      const res = await fetch(`${API_URL}/api/package/get-package-data/${params?.id}`, {
+        credentials: "include",
+      });
       const data = await res.json();
       if (data?.success) {
         setPackageData({
@@ -115,6 +117,7 @@ const Package = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(ratingsData),
+        credentials: "include",
       });
       const data = await res.json();
       if (data?.success) {
@@ -134,7 +137,9 @@ const Package = () => {
 
   const getRatings = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/rating/get-ratings/${params.id}/4`);
+      const res = await fetch(`${API_URL}/api/rating/get-ratings/${params.id}/4`, {
+        credentials: "include",
+      });
       const data = await res.json();
       if (data) {
         setPackageRatings(data);
@@ -148,7 +153,9 @@ const Package = () => {
 
   const checkRatingGiven = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/rating/rating-given/${currentUser?._id}/${params?.id}`);
+      const res = await fetch(`${API_URL}/api/rating/rating-given/${currentUser?._id}/${params?.id}`, {
+        credentials: "include",
+      });
       const data = await res.json();
       setRatingGiven(data?.given);
     } catch (error) {

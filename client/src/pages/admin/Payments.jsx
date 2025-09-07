@@ -15,7 +15,10 @@ const Payments = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `${API_URL}/api/booking/get-allBookings?searchTerm=${search}`
+        `${API_URL}/api/booking/get-allBookings?searchTerm=${search}`,
+        {
+          credentials: "include",
+        }
       );
       const data = await res.json();
       if (data?.success) {
