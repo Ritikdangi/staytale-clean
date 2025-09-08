@@ -19,6 +19,7 @@ export default function PrivateRoute() {
       credentials: "include",
     });
     const data = await res.json();
+    // console.log(data);
     if (data.check) setOk(true);
     else setOk(false);
   };

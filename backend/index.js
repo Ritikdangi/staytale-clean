@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
+
 const app = express();
 dotenv.config();
 
@@ -17,8 +18,8 @@ const allowedOrigins = process.env.ALLOWED_ORIGIN
   ? process.env.ALLOWED_ORIGIN.split(',').map(origin => origin.trim())
   : ["http://localhost:5173", "https://staytale-clean.vercel.app"];
 
-console.log("Environment:", process.env.NODE_ENV_CUSTOM);
-console.log("Allowed origins:", allowedOrigins);
+// console.log("Environment:", process.env.NODE_ENV_CUSTOM);
+// console.log("Allowed origins:", allowedOrigins);
 
 app.use(
   cors({

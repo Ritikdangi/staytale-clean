@@ -90,24 +90,22 @@ export const loginController = async (req, res) => {
     
     const { password: pass, ...rest } = validUser._doc; // Deselect password to send user data
     // Cookie configuration for both local and production
-    const isProduction = process.env.NODE_ENV_CUSTOM === 'production';
+    const isProduction = process.env.NODE_ENV_CUSTOM ==='production';
     const cookieOptions = {
       httpOnly: true,
+      secure: isProduction || true,       // must be true on Render (HTTPS)
+      sameSite:"none", // required for cross-domain
       maxAge: 4 * 24 * 60 * 60 * 1000, // 4 days
-      sameSite: isProduction ? 'none' : 'lax',
-      secure: isProduction,
-      // Don't set domain for local development - let browser handle it
-      path: '/'
+      path: "/",
     };
-
-    res
-      .cookie("X_TTMS_access_token", token, cookieOptions)
-      .status(200)
-      .send({
-        success: true,
-        message: "Login Success",
-        user: { ...rest, role: validUser.role }, // Include role in user data
-      });
+    
+    res.cookie("X_TTMS_access_token", token, cookieOptions)
+       .status(200)
+       .json({
+         success: true,
+         message: "Login Success",
+         user: { ...rest, role: validUser.role },
+       });
   } catch (error) {
     console.log(error);
     return res.status(500).send({

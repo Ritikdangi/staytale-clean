@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 // Middleware to require user sign-in
 export const requireSignIn = async (req, res, next) => {
   const token = req?.cookies?.X_TTMS_access_token;
-  
+  // console.log(token);
   if (!token) {
     return res.status(401).send({
       success: false,
