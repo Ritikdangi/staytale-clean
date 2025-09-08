@@ -4,6 +4,7 @@
       "source": "/api/(.*)",
       "destination": "https://staytale-clean-dyem.vercel.app/api/$1"
     },
+    
     {
       "source": "/(.*)",
       "destination": "/index.html"
