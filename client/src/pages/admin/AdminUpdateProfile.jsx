@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   updateUserStart,
   updateUserSuccess,
@@ -11,7 +12,8 @@ import {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const AdminUpdateProfile = () => {
+const AdminUpdateProfile = ({ setActivePanelId }) => {
+  const navigate = useNavigate();
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [updateProfileDetailsPanel, setUpdateProfileDetailsPanel] =
@@ -73,22 +75,29 @@ const AdminUpdateProfile = () => {
         credentials: "include",
       });
       const data = await res.json();
-      if (data.success === false && res.status !== 201 && res.status !== 200) {
-        dispatch(updateUserSuccess());
-        dispatch(updateUserFailure(data?.messsage));
-        alert("Session Ended! Please login again");
-        navigate("/login");
+
+      if (!res.ok || data?.success === false) {
+        // handle unauthorized
+        if (res.status === 401) {
+          dispatch(updateUserFailure(data?.message || "Unauthorized"));
+          alert("Session Ended! Please login again");
+          navigate("/login");
+          return;
+        }
+        dispatch(updateUserFailure(data?.message || "Update failed"));
+        alert(data?.message || "Something went wrong!");
         return;
       }
-      if (data.success && res.status === 201) {
-        alert(data?.message);
-        dispatch(updateUserSuccess(data?.user));
-        return;
-      }
-      alert(data?.message);
-      return;
+
+  // success
+  dispatch(updateUserSuccess(data?.user));
+  alert(data?.message || "Profile updated successfully");
+  // close the edit panel and return to default panel
+  if (typeof setActivePanelId === "function") setActivePanelId(1);
+  return;
     } catch (error) {
       console.log(error);
+      dispatch(updateUserFailure(error?.message || "Network error"));
     }
   };
 
@@ -116,22 +125,26 @@ const AdminUpdateProfile = () => {
         credentials: "include",
       });
       const data = await res.json();
-      if (data.success === false && res.status !== 201 && res.status !== 200) {
-        dispatch(updateUserSuccess());
-        dispatch(updatePassFailure(data?.message));
-        alert("Session Ended! Please login again");
-        navigate("/login");
+
+      if (!res.ok || data?.success === false) {
+        if (res.status === 401) {
+          dispatch(updatePassFailure(data?.message || "Unauthorized"));
+          alert("Session Ended! Please login again");
+          navigate("/login");
+          return;
+        }
+        dispatch(updatePassFailure(data?.message || "Password update failed"));
+        alert(data?.message || "Something went wrong!");
         return;
       }
+
       dispatch(updatePassSuccess());
-      alert(data?.message);
-      setUpdatePassword({
-        oldpassword: "",
-        newpassword: "",
-      });
+      alert(data?.message || "Password updated successfully");
+      setUpdatePassword({ oldpassword: "", newpassword: "" });
       return;
     } catch (error) {
       console.log(error);
+      dispatch(updatePassFailure(error?.message || "Network error"));
     }
   };
 

@@ -1,0 +1,53 @@
+/* Subtle travel-themed background accent for About page */
+.about-bg {
+  position: relative;
+}
+
+.about-bg::before {
+  /* Soft, low-contrast decorative shapes using gradients */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(ellipse at 10% 20%, rgba(99,102,241,0.06) 0%, transparent 20%),
+    radial-gradient(ellipse at 90% 80%, rgba(16,185,129,0.04) 0%, transparent 25%);
+  /* subtle texture / map-like feel using very fine noise (data URI SVG) */
+  background-repeat: no-repeat;
+  border-radius: 0.75rem;
+}
+
+/* Social link button styling: subtle, elegant */
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 9999px;
+  color: #eef2ff; /* keep light text that matches brand */
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.04);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.social-btn:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.35);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .social-btn { transition: none; transform: none; }
+}
+
+/* Make sure the decorative pseudo element doesn't affect small screens too much */
+@media (max-width: 640px) {
+  .about-bg::before {
+    background-position: center;
+    background-size: 220% 220%;
+  }
+}

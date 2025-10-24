@@ -9,12 +9,15 @@ const Header = () => {
   return (
     <>
       <div className="bg-slate-400 p-4 flex justify-between items-center">
-        <h1
-          className="h-min text-4xl font-bold relative"
+        <Link
+          to={`/`}
+          aria-label="Home"
+          className="h-min text-4xl font-bold relative no-underline"
           style={{
             color: "transparent",
             WebkitTextStroke: "0.7px",
             WebkitTextStrokeColor: "#fff",
+            display: "inline-block",
           }}
         >
           Come
@@ -26,7 +29,7 @@ const Header = () => {
           >
             Dream Tours
           </span>
-        </h1>
+        </Link>
         <ul className="flex flex-wrap items-center justify-center gap-10 text-white font-semibold list-none">
   <li className="hover:underline hover:scale-105 transition-all duration-150">
     <Link to={`/`}>Home</Link>

@@ -13,3 +13,52 @@
     border-radius: 100vw;
     border: white 0.5px solid;
 }
+
+/* Profile card styles for admin left panel */
+.profile-card{
+    background: #ffffff; /* keep light card to match dashboard */
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 6px 24px rgba(2,6,23,0.08);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+.profile-top{ display:flex; justify-content:center; }
+.profile-avatar{ width:120px; height:120px; border-radius:9999px; object-fit:cover; cursor:pointer; border:4px solid rgba(59,130,246,0.06); }
+.profile-avatar.placeholder{ display:flex; align-items:center; justify-content:center; background: linear-gradient(180deg,#f8fafc,#f1f5f9); }
+.upload-row{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; }
+
+.profile-body{ padding:6px 4px; }
+.profile-name{ font-size:1.25rem; font-weight:700; margin-bottom:6px; }
+.info-list{ display:flex; flex-direction:column; gap:8px; }
+.info-row{ display:flex; gap:10px; align-items:flex-start; }
+.info-icon{ color:#60a5fa; font-size:1.05rem; margin-top:3px; }
+.info-label{ font-size:0.85rem; color:rgba(15,23,42,0.7); font-weight:600; }
+.info-value{ font-size:0.95rem; color:rgba(15,23,42,0.9); word-break:break-word; }
+
+.action-row{ display:flex; gap:10px; margin-top:10px; }
+.action-row.top-actions{ justify-content:space-between; }
+.action-row-bottom{ display:flex; gap:10px; justify-content:center; margin-top:12px; }
+.action-row-bottom .btn{ min-width:110px; }
+.btn.small{ padding:6px 10px; font-size:0.95rem; }
+
+/* small progress indicator under avatar */
+.upload-row{ display:flex; align-items:center; gap:12px; justify-content:center; }
+.progress-wrap{ width:120px; height:8px; background: rgba(2,6,23,0.06); border-radius:999px; overflow:hidden; }
+.progress-fill{ height:100%; background: linear-gradient(90deg,#60a5fa,#38bdf8); width:0%; transition: width 200ms linear; }
+.btn{ padding:8px 12px; border-radius:8px; font-weight:600; cursor:pointer; border:1px solid transparent; }
+.btn:focus{ outline:3px solid rgba(59,130,246,0.18); outline-offset:2px; }
+.btn-primary{ background:#2563eb; color:white; border-color:rgba(37,99,235,0.9); }
+.btn-primary:hover{ background:#1e4db8; }
+.btn-secondary{ background:transparent; color:#374151; border:1px solid rgba(55,65,81,0.12); }
+.btn-secondary:hover{ background:rgba(55,65,81,0.04); }
+.btn-danger{ background:transparent; color:#dc2626; border:1px solid rgba(220,38,38,0.06); }
+.btn-danger:hover{ background:rgba(220,38,38,0.04); }
+
+.danger-row{ margin-top:8px; display:flex; justify-content:center; }
+
+@media only screen and (min-width:900px){
+    .profile-card{ padding:18px; }
+    .profile-avatar{ width:160px; height:160px; }
+}

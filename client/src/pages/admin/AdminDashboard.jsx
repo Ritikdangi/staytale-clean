@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaUserCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -159,27 +160,27 @@ const AdminDashboard = () => {
       {currentUser ? (
         <>
           <div className="w-[35%] p-3 max-sm:w-full">
-            <div className="flex flex-col items-center gap-4 p-3">
-              <div className="w-full flex flex-col items-center relative">
-                <img
-                  src={
-                    (profilePhoto && URL.createObjectURL(profilePhoto)) ||
-                    formData.avatar
-                  }
-                  alt="Profile photo"
-                  className="w-64 min-h-52 max-h-64 rounded-lg"
-                  onClick={() => fileRef.current.click()}
-                  onMouseOver={() => {
-                    document
-                      .getElementById("photoLabel")
-                      .classList.add("block");
-                  }}
-                  onMouseOut={() => {
-                    document
-                      .getElementById("photoLabel")
-                      .classList.remove("block");
-                  }}
-                />
+            <aside className="profile-card">
+              <div className="profile-top">
+                {formData.avatar ? (
+                  <img
+                    src={
+                      (profilePhoto && URL.createObjectURL(profilePhoto)) ||
+                      formData.avatar
+                    }
+                    alt={`${currentUser.username} avatar`}
+                    className="profile-avatar"
+                    onClick={() => fileRef.current.click()}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") fileRef.current.click();
+                    }}
+                  />
+                ) : (
+                  <div className="profile-avatar placeholder">
+                    <FaUserCircle aria-hidden className="text-6xl text-slate-400" />
+                  </div>
+                )}
                 <input
                   type="file"
                   name="photo"
@@ -189,72 +190,79 @@ const AdminDashboard = () => {
                   accept="image/*"
                   onChange={(e) => setProfilePhoto(e.target.files[0])}
                 />
-                <label
-                  htmlFor="photo"
-                  id="photoLabel"
-                  className="w-64 bg-slate-300 absolute bottom-0 p-2 text-center text-lg text-white font-semibold rounded-b-lg"
-                  hidden
-                >
-                  Choose Photo
-                </label>
+                {profilePhoto && (
+                  <div className="upload-row">
+                    <button
+                      onClick={() => handleProfilePhoto(profilePhoto)}
+                      className="btn btn-primary small"
+                    >
+                      {photoPercentage > 0 && photoPercentage < 100
+                        ? `Uploading (${photoPercentage}%)`
+                        : "Upload"}
+                    </button>
+                    {photoPercentage > 0 && (
+                      <div className="progress-wrap">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${photoPercentage}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              {profilePhoto && (
-                <div className="flex w-full justify-between gap-1">
+
+              <div className="profile-body">
+                <h3 className="profile-name">Hi {currentUser.username}!</h3>
+
+                <div className="info-list">
+                  <div className="info-row">
+                    <FaEnvelope className="info-icon" aria-hidden />
+                    <div>
+                      <div className="info-label">Email</div>
+                      <div className="info-value">{currentUser.email}</div>
+                    </div>
+                  </div>
+
+                  <div className="info-row">
+                    <FaPhone className="info-icon" aria-hidden />
+                    <div>
+                      <div className="info-label">Phone</div>
+                      <div className="info-value">{currentUser.phone}</div>
+                    </div>
+                  </div>
+
+                  <div className="info-row">
+                    <FaMapMarkerAlt className="info-icon" aria-hidden />
+                    <div>
+                      <div className="info-label">Address</div>
+                      <div className="info-value">{currentUser.address}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="action-row-bottom">
                   <button
-                    onClick={() => handleProfilePhoto(profilePhoto)}
-                    className="bg-green-700 p-2 text-white mt-3 flex-1 hover:opacity-90"
+                    onClick={() => setActivePanelId(8)}
+                    className="btn btn-primary"
                   >
-                    {loading ? `Uploading...(${photoPercentage}%)` : "Upload"}
+                    Edit Profile
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="btn btn-secondary"
+                  >
+                    Log out
+                  </button>
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="btn btn-danger"
+                  >
+                    Delete account
                   </button>
                 </div>
-              )}
-              <p
-                style={{
-                  width: "100%",
-                  borderBottom: "1px solid black",
-                  lineHeight: "0.1em",
-                  margin: "10px",
-                }}
-              >
-                <span className="font-semibold" style={{ background: "#fff" }}>
-                  Details
-                </span>
-              </p>
-              <div className="w-full flex justify-between px-1">
-                <button
-                  onClick={handleLogout}
-                  className="text-red-600 text-lg font-semibold self-start border border-red-600 p-1 rounded-lg hover:bg-red-600 hover:text-white"
-                >
-                  Log-out
-                </button>
-                <button
-                  onClick={() => setActivePanelId(8)}
-                  className="text-white text-lg self-end bg-gray-500 p-1 rounded-lg hover:bg-gray-700"
-                >
-                  Edit Profile
-                </button>
               </div>
-              <div className="w-full shadow-2xl rounded-lg p-3 break-all">
-                <p className="text-3xl font-semibold m-1">
-                  Hi {currentUser.username} !
-                </p>
-                <p className="text-lg font-semibold">
-                  Email:{currentUser.email}
-                </p>
-                <p className="text-lg font-semibold">
-                  Phone:{currentUser.phone}
-                </p>
-                <p className="text-lg font-semibold">
-                  Address:{currentUser.address}
-                </p>
-              </div>
-              <button
-                onClick={handleDeleteAccount}
-                className="text-red-600 hover:underline"
-              >
-                Delete account
-              </button>
-            </div>
+            </aside>
           </div>
           {/* ---------------------------------------------------------------------------------------- */}
           <div className="w-[65%] max-sm:w-full">
@@ -367,7 +375,7 @@ const AdminDashboard = () => {
                 ) : activePanelId === 7 ? (
                   <History />
                 ) : activePanelId === 8 ? (
-                  <AdminUpdateProfile />
+                  <AdminUpdateProfile setActivePanelId={setActivePanelId} />
                 ) : (
                   <div>Page Not Found!</div>
                 )}

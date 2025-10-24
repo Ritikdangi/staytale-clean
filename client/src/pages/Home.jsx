@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "./styles/Home.css";
-import { FaCalendar, FaSearch, FaStar } from "react-icons/fa";
+import { FaCalendar, FaSearch, FaStar, FaPlane } from "react-icons/fa";
 import { FaRankingStar } from "react-icons/fa6";
 import { LuBadgePercent } from "react-icons/lu";
 import PackageCard from "./PackageCard";
@@ -161,7 +161,15 @@ const Home = () => {
           {/* Top Rated */}
           {!loading && topPackages.length > 0 && (
             <>
-              <h1 className="text-2xl font-semibold">Top Packages</h1>
+              <div className="section-header">
+                <h2 className="section-title text-2xl md:text-3xl font-semibold flex items-center gap-2">
+                  <FaPlane className="section-icon" />
+                  Top Packages
+                </h2>
+                <p className="section-subtitle">Explore our handpicked luxury destinations</p>
+                <div className="section-divider" />
+              </div>
+
               <div className="grid 2xl:grid-cols-5 xlplus:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-2 my-3">
                 {topPackages.map((packageData, i) => {
                   return <PackageCard key={i} packageData={packageData} />;
@@ -173,7 +181,15 @@ const Home = () => {
           {/* latest */}
           {!loading && latestPackages.length > 0 && (
             <>
-              <h1 className="text-2xl font-semibold">Latest Packages</h1>
+              <div className="section-header">
+                <h2 className="section-title text-2xl md:text-3xl font-semibold flex items-center gap-2">
+                  <FaPlane className="section-icon" />
+                  Latest Packages
+                </h2>
+                <p className="section-subtitle">Discover our most recent travel experiences</p>
+                <div className="section-divider" />
+              </div>
+
               <div className="grid 2xl:grid-cols-5 xlplus:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-2 my-3">
                 {latestPackages.map((packageData, i) => {
                   return <PackageCard key={i} packageData={packageData} />;
@@ -186,7 +202,15 @@ const Home = () => {
           {!loading && offerPackages.length > 0 && (
             <>
               <div className="offers_img"></div>
-              <h1 className="text-2xl font-semibold">Best Offers</h1>
+              <div className="section-header">
+                <h2 className="section-title text-2xl md:text-3xl font-semibold flex items-center gap-2">
+                  <FaPlane className="section-icon" />
+                  Best Offers
+                </h2>
+                <p className="section-subtitle">Special deals and seasonal offers for smart travelers</p>
+                <div className="section-divider" />
+              </div>
+
               <div className="grid 2xl:grid-cols-5 xlplus:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-2 my-3">
                 {offerPackages.map((packageData, i) => {
                   return <PackageCard key={i} packageData={packageData} />;
