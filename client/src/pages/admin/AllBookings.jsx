@@ -77,6 +77,19 @@ const AllBookings = () => {
         </div>
         {!loading &&
           currentBookings &&
+          currentBookings.length > 0 && (
+            <div className="w-full border-b p-3 hidden sm:flex items-center justify-between gap-3 text-gray-600 font-semibold">
+              <p className="w-12">Photo</p>
+              <p className="flex-1">Package</p>
+              <p className="w-40">User</p>
+              <p className="w-56">Email</p>
+              <p className="w-36">Date</p>
+              <p className="w-24">Action</p>
+            </div>
+          )}
+
+        {!loading &&
+          currentBookings &&
           currentBookings.map((booking, i) => {
             return (
               <div

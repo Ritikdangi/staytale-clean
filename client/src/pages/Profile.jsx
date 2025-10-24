@@ -26,6 +26,7 @@ import { app } from "../firebase";
 import MyBookings from "./user/MyBookings";
 import UpdateProfile from "./user/UpdateProfile";
 import MyHistory from "./user/MyHistory";
+import MyPayments from "./user/MyPayments";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -286,6 +287,17 @@ const Profile = () => {
                   >
                     History
                   </button>
+                  <button
+                    className={
+                      activePanelId === 4
+                        ? "p-1 rounded-t transition-all duration-300 bg-blue-500 text-white"
+                        : "p-1 rounded-t transition-all duration-300"
+                    }
+                    id="payments"
+                    onClick={() => setActivePanelId(4)}
+                  >
+                    Payments
+                  </button>
                 </div>
               </nav>
               {/* bookings */}
@@ -293,6 +305,8 @@ const Profile = () => {
                 {activePanelId === 1 && <MyBookings />}
                 {/* History */}
                 {activePanelId === 2 && <MyHistory />}
+                {/* Payments */}
+                {activePanelId === 4 && <MyPayments />}
                 {/* Update profile */}
                 {activePanelId === 3 && <UpdateProfile setActivePanelId={setActivePanelId} />}
               </div>

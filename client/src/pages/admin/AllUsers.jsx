@@ -76,9 +76,19 @@ const AllUsers = () => {
                 setSearch(e.target.value);
               }}
             />
-            <h2 className="text-xl font-semibold mb-2 ml-2">
-              Total Users: {allUser.length ? allUser?.length : "Loading..."}
-            </h2>
+              <h2 className="text-xl font-semibold mb-2 ml-2">
+                Total Users: {allUser.length ? allUser?.length : "Loading..."}
+              </h2>
+              {allUser && allUser.length > 0 && (
+                <div className="flex overflow-auto justify-between p-2 px-3 border-b-2 gap-3 text-gray-600 font-semibold hidden sm:flex">
+                  <h5 className="flex flex-1 justify-center items-center text-ellipsis p-[5px]">ID</h5>
+                  <h5 className="flex flex-1 justify-center items-center text-ellipsis p-[5px]">Username</h5>
+                  <h5 className="flex flex-1 justify-center items-center text-ellipsis p-[5px]">Email</h5>
+                  <h5 className="flex flex-1 justify-center items-center text-ellipsis p-[5px]">Address</h5>
+                  <h5 className="flex flex-1 justify-center items-center text-ellipsis p-[5px]">Phone</h5>
+                  <div className="flex flex-col flex-1 justify-center items-center p-[5px]">Action</div>
+                </div>
+              )}
           </div>
           {allUser ? (
             allUser.map((user, i) => {
