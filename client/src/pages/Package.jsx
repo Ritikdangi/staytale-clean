@@ -13,6 +13,10 @@ import {
   FaClock,
   FaMapMarkerAlt,
   FaShare,
+  FaBed,
+  FaUtensils,
+  FaTrain,
+  FaHiking,
 } from "react-icons/fa";
 import Rating from "@mui/material/Rating";
 import { useSelector } from "react-redux";
@@ -196,13 +200,13 @@ const Package = () => {
           <Swiper navigation>
             {packageData?.packageImages.map((imageUrl, i) => (
               <SwiperSlide key={i}>
-                <div
-                  className="h-[400px]"
-                  style={{
-                    background: `url(${imageUrl}) center no-repeat`,
-                    backgroundSize: "cover",
-                  }}
-                ></div>
+                {/* Use an img with object-fit to preserve aspect ratio and crisp rendering */}
+                <img
+                  src={imageUrl}
+                  alt={`package-${i}`}
+                  loading="lazy"
+                  className="w-full h-[400px] md:h-[520px] object-contain bg-slate-100 object-center"
+                />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -233,236 +237,113 @@ const Package = () => {
               }}
             />
           </div>
-          <div className="w-full flex flex-col p-5 gap-2">
-            <p className="text-2xl font-bold capitalize">
-              {packageData?.packageName}
-            </p>
-            {/* price */}
-            <p className="flex gap-1 text-2xl font-semibold my-3">
-              {packageData?.packageOffer ? (
-                <>
-                  <span className="line-through text-gray-700">
-                    {packageData?.packagePrice} RS
-                  </span>{" "}
-                  -<span>{packageData?.packageDiscountPrice}</span>
-                  <span className="text-lg ml-2 bg-green-700 p-1 rounded text-white">
-                    {Math.floor(
-                      ((+packageData?.packagePrice -
-                        +packageData?.packageDiscountPrice) /
-                        +packageData?.packagePrice) *
-                        100
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
+            {/* Main content (left) */}
+            <div className="md:col-span-2 flex flex-col gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h1 className="text-3xl md:text-4xl font-serif font-extrabold leading-tight">{packageData?.packageName}</h1>
+                <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <div className="flex items-baseline gap-3">
+                      {packageData?.packageOffer ? (
+                        <>
+                          <span className="text-lg text-gray-500 line-through">{packageData?.packagePrice} RS</span>
+                          <span className="text-2xl font-bold">{packageData?.packageDiscountPrice} RS</span>
+                        </>
+                      ) : (
+                        <span className="text-2xl font-bold">{packageData?.packagePrice} RS</span>
+                      )}
+                      {packageData?.packageOffer && (
+                        <span className="ml-3 inline-block bg-green-700 text-white px-3 py-1 rounded-full text-sm font-semibold">{Math.floor(((+packageData?.packagePrice - +packageData?.packageDiscountPrice) / +packageData?.packagePrice) * 100)}% Off</span>
+                      )}
+                    </div>
+                    <div className="mt-2 flex items-center gap-4 text-gray-700">
+                      <span className="flex items-center gap-2"><FaMapMarkerAlt className="text-green-700"/> <span className="font-medium">{packageData?.packageDestination}</span></span>
+                      {( +packageData?.packageDays > 0 || +packageData?.packageNights > 0) && (
+                        <span className="flex items-center gap-2 text-sm"><FaClock /> <span className="font-medium">{+packageData?.packageDays > 0 ? (packageData?.packageDays + (packageData?.packageDays>1? ' Days':' Day')) : ''}{+packageData?.packageNights > 0 ? ' - ' + (packageData?.packageNights + (packageData?.packageNights>1? ' Nights':' Night')) : ''}</span></span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-4">
+                    {packageData?.packageTotalRatings > 0 && (
+                      <div className="flex items-center gap-2"><Rating value={packageData?.packageRating || 0} readOnly precision={0.1} /> <div className="text-sm text-gray-600">({packageData?.packageTotalRatings})</div></div>
                     )}
-                    % Off
-                  </span>
-                </>
-              ) : (
-                <span>{packageData?.packagePrice}</span>
-              )}
-            </p>
-            {/* price */}
-            {/* destination */}
-            <p className="text-green-700 flex items-center gap-1 text-lg capitalize">
-              <FaMapMarkerAlt />
-              {packageData?.packageDestination}
-            </p>
-            {/* destination */}
-            {/* days & nights */}
-            {(+packageData?.packageDays > 0 ||
-              +packageData?.packageNights > 0) && (
-              <p className="flex items-center gap-2">
-                <FaClock />
-                {+packageData?.packageDays > 0 &&
-                  (+packageData?.packageDays > 1
-                    ? packageData?.packageDays + " Days"
-                    : packageData?.packageDays + " Day")}
-                {+packageData?.packageDays > 0 &&
-                  +packageData?.packageNights > 0 &&
-                  " - "}
-                {+packageData?.packageNights > 0 &&
-                  (+packageData?.packageNights > 1
-                    ? packageData?.packageNights + " Nights"
-                    : packageData?.packageNights + " Night")}
-              </p>
-            )}
-            {/* days & nights */}
-            {/* rating */}
-            {packageData?.packageTotalRatings > 0 && (
-              <div className="flex">
-                <Rating
-                  value={packageData?.packageRating || 0}
-                  readOnly
-                  precision={0.1}
-                />
-                <p>({packageData?.packageTotalRatings})</p>
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <h4 className="text-lg font-semibold mb-2">Overview</h4>
+                  <p className="text-sm text-gray-800 leading-relaxed">{packageData?.packageDescription}</p>
+                </div>
               </div>
-            )}
-            {/* rating */}
-            {/* Description */}
-            <div className="w-full flex flex-col mt-2">
-              {/* <h4 className="text-xl">Description:</h4> */}
-              <p className="break-all flex flex-col font-medium">
-                {packageData?.packageDescription.length > 280 ? (
-                  <>
-                    <span id="desc">
-                      {packageData?.packageDescription.substring(0, 150)}...
-                    </span>
-                    <button
-                      id="moreBtn"
-                      onClick={() => {
-                        document.getElementById("desc").innerText =
-                          packageData?.packageDescription;
-                        document.getElementById("moreBtn").style.display =
-                          "none";
-                        document.getElementById("lessBtn").style.display =
-                          "flex";
-                      }}
-                      className="w-max font-semibold flex items-center gap-2 text-gray-600 hover:underline"
-                    >
-                      More <FaArrowDown />
-                    </button>
-                    <button
-                      id="lessBtn"
-                      onClick={() => {
-                        document.getElementById("desc").innerText =
-                          packageData?.packageDescription;
-                        document.getElementById("desc").innerText =
-                          packageData?.packageDescription.substring(0, 150) +
-                          "...";
-                        document.getElementById("lessBtn").style.display =
-                          "none";
-                        document.getElementById("moreBtn").style.display =
-                          "flex";
-                      }}
-                      className="w-max font-semibold ml-2 hidden items-center gap-2 text-gray-600 hover:underline"
-                    >
-                      Less <FaArrowUp />
-                    </button>
-                  </>
-                ) : (
-                  <>{packageData?.packageDescription}</>
-                )}
-              </p>
-            </div>
-            <div className="w-full flex justify-center sm:justify-normal">
-              <button
-                type="button"
-                onClick={() => {
-                  if (currentUser) {
-                    navigate(`/booking/${params?.id}`);
-                  } else {
-                    navigate("/login");
-                  }
-                }}
-                className="w-full sm:w-[200px] bg-green-700 text-white rounded p-3 hover:opacity-95"
-              >
-                Book
-              </button>
-            </div>
-            {/* Description */}
-            {/* Accommodation */}
-            <div className="w-full flex flex-col mt-2">
-              <h4 className="text-xl">Accommodation:</h4>
-              <p>{packageData?.packageAccommodation}</p>
-            </div>
-            {/* Accommodation */}
-            {/* Activities */}
-            <div className="w-full flex flex-col mt-2">
-              <h4 className="text-xl">Activities:</h4>
-              <p>{packageData?.packageActivities}</p>
-            </div>
-            {/* Activities */}
-            {/* meals */}
-            <div className="w-full flex flex-col mt-2">
-              <h4 className="text-xl">Meals:</h4>
-              <p>{packageData?.packageMeals}</p>
-            </div>
-            {/* meals */}
-            {/* Transportation */}
-            <div className="w-full flex flex-col mt-2">
-              <h4 className="text-xl">Transportation:</h4>
-              <p>{packageData?.packageTransportation}</p>
-            </div>
-            {/* Transportation */}
-            <hr />
-            {/* give rating/review */}
-            <div className="w-full flex flex-col mt-2 items-center">
-              {packageRatings && (
-                <>
-                  <h4 className="text-xl">Rating/Reviews:</h4>
-                  <div
-                    className={`w-full sm:max-w-[640px] gap-2 ${
-                      !currentUser || ratingGiven
-                        ? "hidden"
-                        : "flex flex-col items-center"
-                    } `}
-                  >
-                    <Rating
-                      name="simple-controlled"
-                      className="w-max"
-                      value={ratingsData?.rating}
-                      onChange={(e, newValue) => {
-                        setRatingsData({
-                          ...ratingsData,
-                          rating: newValue,
-                        });
-                      }}
-                    />
-                    <textarea
-                      className="w-full resize-none p-3 border border-black rounded"
-                      rows={3}
-                      placeholder="Review"
-                      value={ratingsData?.review}
-                      onChange={(e) => {
-                        setRatingsData({
-                          ...ratingsData,
-                          review: e.target.value,
-                        });
-                      }}
-                    ></textarea>
-                    <button
-                      disabled={
-                        (ratingsData.rating === 0 &&
-                          ratingsData.review === "") ||
-                        loading
-                      }
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        giveRating();
-                      }}
-                      className="w-full p-2 bg-green-700 text-white rounded disabled:opacity-80 hover:opacity-95"
-                    >
-                      {loading ? "Loading..." : "Submit"}
-                    </button>
-                    <hr />
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h4 className="text-lg font-semibold mb-4">Amenities</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <FaBed className="text-2xl text-gray-700 mt-1" />
+                    <div><div className="text-sm font-medium">Accommodation</div><div className="text-sm text-gray-700">{packageData?.packageAccommodation}</div></div>
                   </div>
-                  <div className="mt-3 w-full gap-2 grid 2xl:grid-cols-6 xl:grid-cols-5 xlplus:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
-                    <RatingCard packageRatings={packageRatings} />
-                    {packageData.packageTotalRatings > 4 && (
-                      <button
-                        onClick={() =>
-                          navigate(`/package/ratings/${params?.id}`)
-                        }
-                        className="flex items-center justify-center text-lg gap-2 p-2 rounded border hover:bg-slate-500 hover:text-white"
-                      >
-                        View All <FaArrowRight />
-                      </button>
+                  <div className="flex items-start gap-3">
+                    <FaHiking className="text-2xl text-gray-700 mt-1" />
+                    <div><div className="text-sm font-medium">Activities</div><div className="text-sm text-gray-700">{packageData?.packageActivities}</div></div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <FaUtensils className="text-2xl text-gray-700 mt-1" />
+                    <div><div className="text-sm font-medium">Meals</div><div className="text-sm text-gray-700">{packageData?.packageMeals}</div></div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <FaTrain className="text-2xl text-gray-700 mt-1" />
+                    <div><div className="text-sm font-medium">Transportation</div><div className="text-sm text-gray-700">{packageData?.packageTransportation}</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h4 className="text-lg font-semibold mb-4">Rating & Reviews</h4>
+                <div>
+                  {!currentUser ? (
+                    <div className="text-center"><button onClick={() => navigate('/login')} className="px-4 py-2 bg-green-700 text-white rounded">Login to rate</button></div>
+                  ) : currentUser?.role === 'admin' ? (
+                    <div className="p-4 rounded border bg-yellow-50 text-sm text-gray-800">Admin accounts are restricted from submitting public reviews.</div>
+                  ) : ratingGiven ? (
+                    <div className="p-4 rounded border bg-slate-50 text-sm text-gray-800">You have already submitted a review for this package.</div>
+                  ) : (
+                    <form className="flex flex-col gap-3">
+                      <div className="flex items-center gap-4">
+                        <Rating name="simple-controlled" value={ratingsData?.rating} onChange={(e, newValue) => setRatingsData({...ratingsData, rating: newValue})} />
+                        <div className="text-sm text-gray-600">Select rating and write your feedback below</div>
+                      </div>
+                      <textarea className="w-full resize-none p-4 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-green-200" rows={4} placeholder="Share your experience — what you liked, what could be improved" value={ratingsData?.review} onChange={(e) => setRatingsData({...ratingsData, review: e.target.value})}></textarea>
+                      <div className="flex justify-end"><button disabled={(ratingsData.rating === 0 && ratingsData.review === '') || loading} type="button" onClick={(e) => { e.preventDefault(); giveRating(); }} className="px-5 py-2 bg-green-700 text-white rounded disabled:opacity-60">{loading ? 'Submitting...' : 'Submit Review'}</button></div>
+                    </form>
+                  )}
+                </div>
+                <div className="mt-6"><RatingCard packageRatings={packageRatings} /></div>
+                {packageData.packageTotalRatings > 4 && (<div className="mt-4 text-center"><button onClick={() => navigate(`/package/ratings/${params?.id}`)} className="flex items-center justify-center text-lg gap-2 p-2 rounded border hover:bg-slate-500 hover:text-white">View All <FaArrowRight /></button></div>)}
+              </div>
+            </div>
+
+            {/* Booking CTA aside */}
+            <aside className="md:col-span-1">
+              <div className="sticky top-24 bg-white rounded-lg shadow p-6">
+                <div className="flex items-baseline justify-between">
+                  <div>
+                    {packageData?.packageOffer ? (
+                      <>
+                        <div className="text-sm text-gray-500 line-through">{packageData?.packagePrice} RS</div>
+                        <div className="text-2xl font-bold">{packageData?.packageDiscountPrice} RS</div>
+                      </>
+                    ) : (
+                      <div className="text-2xl font-bold">{packageData?.packagePrice} RS</div>
                     )}
                   </div>
-                </>
-              )}
-              {(!currentUser || currentUser === null) && (
-                <button
-                  onClick={() => {
-                    navigate("/login");
-                  }}
-                  className="p-2 rounded text-white bg-green-700"
-                >
-                  Rate Package
-                </button>
-              )}
-            </div>
-            {/* give rating/review */}
+                  {packageData?.packageOffer && (<div className="inline-block bg-green-700 text-white px-3 py-1 rounded-full text-sm font-semibold">{Math.floor(((+packageData?.packagePrice - +packageData?.packageDiscountPrice) / +packageData?.packagePrice) * 100)}% Off</div>)}
+                </div>
+                <div className="mt-4"><button type="button" onClick={() => { if (currentUser) { navigate(`/booking/${params?.id}`); } else { navigate('/login'); } }} className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold">Book Now</button></div>
+                <div className="mt-3 text-xs text-gray-500">Secure booking • Free cancellation</div>
+                {packageData?.packageTotalRatings > 0 && (<div className="mt-4 flex items-center gap-2"><Rating value={packageData?.packageRating || 0} readOnly precision={0.1} /> <div className="text-sm text-gray-600">({packageData?.packageTotalRatings})</div></div>)}
+              </div>
+            </aside>
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
+import { FaClock, FaMapMarkerAlt, FaLock, FaBed, FaUtensils, FaSwimmingPool, FaSnowflake, FaCalendarAlt, FaPlus, FaMinus, FaCcVisa, FaPaypal, FaExclamationTriangle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import DropIn from "braintree-web-drop-in-react";
@@ -39,6 +39,7 @@ const Booking = () => {
   });
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("card");
   const [currentDate, setCurrentDate] = useState("");
 
   const getPackageData = async () => {
@@ -128,6 +129,11 @@ const Booking = () => {
     }
   };
 
+  const scrollToSummary = () => {
+    const el = document.getElementById("package-summary");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   useEffect(() => {
     if (params?.packageId) {
       getPackageData();
@@ -151,227 +157,129 @@ const Booking = () => {
   }, [packageData, params]);
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="w-[95%] flex flex-col items-center p-6 rounded shadow-2xl gap-3">
-        <h1 className="text-center font-bold text-2xl">Book Package</h1>
-        {/* user info */}
-        <div className="w-full flex flex-wrap justify-center gap-2">
-          <div className="pr-3 md:border-r md:pr-6">
-            <div className="flex flex-col p-2 w-64 xsm:w-72 h-fit gap-2">
-              <div className="flex flex-col">
-                <label htmlFor="username" className="font-semibold">
-                  Username:
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  className="p-1 rounded border border-black"
-                  value={currentUser.username}
-                  disabled
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="email" className="font-semibold">
-                  Email:
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="p-1 rounded border border-black"
-                  value={currentUser.email}
-                  disabled
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="address" className="font-semibold">
-                  Address:
-                </label>
-                <textarea
-                  maxLength={200}
-                  type="text"
-                  id="address"
-                  className="p-1 rounded border border-black resize-none"
-                  value={currentUser.address}
-                  disabled
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="phone" className="font-semibold">
-                  Phone:
-                </label>
-                <input
-                  type="text"
-                  id="phone"
-                  className="p-1 rounded border border-black"
-                  value={currentUser.phone}
-                  disabled
-                />
+    <div className="w-full flex justify-center py-8 pb-28 md:pb-0">
+      <div className="w-[95%] grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Right: Booking summary CTA (placed first so it stacks above on mobile) */}
+  <aside id="package-summary" className="md:col-span-1 order-first md:order-none">
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-start gap-4 mb-3">
+              {packageData.packageImages && packageData.packageImages.length > 0 ? (
+                <img src={packageData.packageImages[0]} alt="hotel" className="w-24 h-16 rounded-md object-cover" />
+              ) : (
+                <div className="w-24 h-16 rounded-md bg-gray-100" />
+              )}
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold mb-1">{packageData.packageName}</h3>
+                <p className="flex items-center gap-2 text-green-700"><FaMapMarkerAlt /> <span className="font-medium">{packageData.packageDestination}</span></p>
               </div>
             </div>
-          </div>
-          {/* package info */}
-          <div className="pl-3 md:border-l md:pl-6">
-            <div className="flex flex-col gap-1">
+            {( +packageData.packageDays > 0 || +packageData.packageNights > 0) && (
+              <p className="flex items-center gap-2 text-sm text-gray-700 mb-3">
+                <FaClock />
+                <span>{+packageData.packageDays > 0 ? packageData.packageDays + (packageData.packageDays>1 ? ' Days' : ' Day') : ''}{+packageData.packageNights > 0 ? ' - ' + packageData.packageNights + (packageData.packageNights>1 ? ' Nights' : ' Night') : ''}</span>
+              </p>
+            )}
+            <div className="mb-3">
+              {packageData.packageOffer ? (
+                <div className="flex items-baseline gap-3">
+                  <div className="text-sm text-gray-500 line-through">{packageData.packagePrice} RS</div>
+                  <div className="text-2xl font-bold">{packageData.packageDiscountPrice} RS</div>
+                </div>
+              ) : (
+                <div className="text-2xl font-bold text-green-700">{packageData.packagePrice} RS</div>
+              )}
+              {packageData.packageOffer && (
+                <div className="inline-block bg-green-700 text-white px-3 py-1 rounded-full text-sm font-semibold mt-2">
+                  {Math.floor(((+packageData.packagePrice - +packageData.packageDiscountPrice) / +packageData.packagePrice) * 100)}% Off
+                </div>
+              )}
+            </div>
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold mb-2">What's included</h4>
               <div className="flex flex-wrap gap-2">
-                <img
-                  className="w-28"
-                  src={packageData.packageImages[0]}
-                  alt="Package image"
-                />
-                <div>
-                  <p className="font-semibold text-lg mb-1 capitalize">
-                    {packageData.packageName}
-                  </p>
-                  <p className="flex gap-2 text-green-700 font-semibold capitalize">
-                    <FaMapMarkerAlt /> {packageData.packageDestination}
-                  </p>
-                  {/* days & nights */}
-                  {(+packageData.packageDays > 0 ||
-                    +packageData.packageNights > 0) && (
-                    <p className="flex items-center gap-2">
-                      <FaClock />
-                      {+packageData.packageDays > 0 &&
-                        (+packageData.packageDays > 1
-                          ? packageData.packageDays + " Days"
-                          : packageData.packageDays + " Day")}
-                      {+packageData.packageDays > 0 &&
-                        +packageData.packageNights > 0 &&
-                        " - "}
-                      {+packageData.packageNights > 0 &&
-                        (+packageData.packageNights > 1
-                          ? packageData.packageNights + " Nights"
-                          : packageData.packageNights + " Night")}
-                    </p>
-                  )}
+                <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm"><FaBed /> {packageData.packageAccommodation ? 'Accommodation' : '—'}</span>
+                <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm"><FaUtensils /> {packageData.packageMeals ? 'Meals' : '—'}</span>
+                <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm"><FaSwimmingPool /> {packageData.packageActivities ? 'Activities' : '—'}</span>
+                <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm"><FaSnowflake /> {packageData.packageTransportation ? 'Transport' : '—'}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-500"><FaLock className="text-sm" title="Secure booking" /> <span title="Secure booking — Free cancellation">Secure booking • Free cancellation</span></div>
+          </div>
+        </aside>
+
+        {/* Left: User form (card) */}
+        <div className="md:col-span-2 bg-white rounded-lg shadow p-6">
+          <h2 className="text-2xl font-serif font-bold mb-4">Book Package</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">Username</label>
+                <input type="text" className="w-full p-2 border rounded" value={currentUser.username} disabled />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Email</label>
+                <input type="email" className="w-full p-2 border rounded" value={currentUser.email} disabled />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Address</label>
+                <textarea className="w-full p-2 border rounded resize-none" rows={3} value={currentUser.address} disabled />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Phone</label>
+                <input type="text" className="w-full p-2 border rounded" value={currentUser.phone} disabled />
+              </div>
+            </div>
+
+            {/* Booking details fields */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">Select Date</label>
+                <input type="date" min={currentDate !== "" ? currentDate : ""} className="w-max p-2 border rounded" onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })} />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Persons</label>
+                <div className="inline-flex items-center border rounded overflow-hidden">
+                  <button className="px-3 py-1" onClick={() => { if (bookingData.persons > 1) { const newPersons = bookingData.persons - 1; setBookingData({ ...bookingData, persons: newPersons, totalPrice: packageData.packageDiscountPrice ? packageData.packageDiscountPrice * newPersons : packageData.packagePrice * newPersons }); } }}>-</button>
+                  <div className="px-4">{bookingData.persons}</div>
+                  <button className="px-3 py-1" onClick={() => { if (bookingData.persons < 10) { const newPersons = bookingData.persons + 1; setBookingData({ ...bookingData, persons: newPersons, totalPrice: packageData.packageDiscountPrice ? packageData.packageDiscountPrice * newPersons : packageData.packagePrice * newPersons }); } }}>+</button>
                 </div>
               </div>
-              <div className="flex flex-col my-1">
-                <label className="font-semibold" htmlFor="date">
-                  Select Date:
-                </label>
-                <input
-                  type="date"
-                  min={currentDate !== "" ? currentDate : ""}
-                  //   min={"2024-10-23"}
-                  id="date"
-                  className="w-max border rounded"
-                  onChange={(e) => {
-                    setBookingData({ ...bookingData, date: e.target.value });
-                  }}
-                />
+              <div>
+                <label className="block text-sm font-semibold mb-1">Total Price</label>
+                <div className="text-xl font-bold text-green-700">{packageData.packageDiscountPrice ? packageData.packageDiscountPrice * bookingData.persons : packageData.packagePrice * bookingData.persons} RS</div>
               </div>
-              {/* price */}
-              <p className="flex gap-1 text-xl font-semibold my-1">
-                Price:
-                {packageData.packageOffer ? (
-                  <>
-                    <span className="line-through text-gray-700">
-                      {packageData.packagePrice} RS
-                    </span>{" "}
-                    -<span>{packageData.packageDiscountPrice} RS</span>
-                    <span className="text-lg ml-2 bg-green-700 p-1 rounded text-white">
-                      {Math.floor(
-                        ((+packageData.packagePrice -
-                          +packageData.packageDiscountPrice) /
-                          +packageData.packagePrice) *
-                          100
-                      )}
-                      % Off
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-green-700">
-                    {packageData.packagePrice} RS
-                  </span>
-                )}
-              </p>
-              {/* price */}
-              <div className="flex border-2 w-max">
-                <button
-                  className="p-2 py-1 font-semibold"
-                  onClick={() => {
-                    if (bookingData.persons > 1) {
-                      setBookingData({
-                        ...bookingData,
-                        persons: (bookingData.persons -= 1),
-                        totalPrice: packageData.packageDiscountPrice
-                          ? packageData.packageDiscountPrice *
-                            bookingData.persons
-                          : packageData.packagePrice * bookingData.persons,
-                      });
-                    }
-                  }}
-                >
-                  -
-                </button>
-                <input
-                  value={bookingData.persons}
-                  disabled
-                  type="text"
-                  className="border w-10 text-center text-lg"
-                />
-                <button
-                  className="p-2 py-1 font-semibold"
-                  onClick={() => {
-                    if (bookingData.persons < 10) {
-                      setBookingData({
-                        ...bookingData,
-                        persons: (bookingData.persons += 1),
-                        totalPrice: packageData.packageDiscountPrice
-                          ? packageData.packageDiscountPrice *
-                            bookingData.persons
-                          : packageData.packagePrice * bookingData.persons,
-                      });
-                    }
-                  }}
-                >
-                  +
-                </button>
-              </div>
-              <p className="text-xl font-semibold">
-                Total Price:
-                <span className="text-green-700">
-                  
-                  {packageData.packageDiscountPrice
-                    ? packageData.packageDiscountPrice * bookingData.persons
-                    : packageData.packagePrice * bookingData.persons} RS
-                </span>
-              </p>
-              <div className="my-2 max-w-[300px] gap-1">
-                <p
-                  className={`font-semibold ${
-                    instance && "text-red-700 text-sm"
-                  }`}
-                >
-                  Payment:
-                  {!instance
-                    ? "Loading..."
-                    : "Don't use your original card details!(This is not the production build)"}
-                </p>
+              <div>
+                <p className={`text-sm font-semibold ${instance ? 'text-red-700' : ''}`}>Payment: {!instance ? 'Loading...' : "Don't use your original card details (test mode)"} <span title="Test mode — don't enter real card details" className="ml-2 text-yellow-700"><FaExclamationTriangle /></span></p>
+
+                {/* Payment method tabs (UI only, DropIn handles actual methods) */}
+                <div className="mt-3 flex gap-2 items-center">
+                  <label className={`flex items-center gap-2 px-3 py-1 rounded cursor-pointer ${paymentMethod==='card' ? 'bg-gray-100 border' : 'bg-transparent'}`}>
+                    <input type="radio" name="payment" value="card" checked={paymentMethod==='card'} onChange={() => setPaymentMethod('card')} className="hidden" />
+                    <FaCcVisa /> <span className="text-sm">Card</span>
+                  </label>
+                  <label className={`flex items-center gap-2 px-3 py-1 rounded cursor-pointer ${paymentMethod==='paypal' ? 'bg-gray-100 border' : 'bg-transparent'}`}>
+                    <input type="radio" name="payment" value="paypal" checked={paymentMethod==='paypal'} onChange={() => setPaymentMethod('paypal')} className="hidden" />
+                    <FaPaypal /> <span className="text-sm">PayPal</span>
+                  </label>
+                </div>
+
                 {clientToken && (
-                  <>
-                    <DropIn
-                      options={{
-                        authorization: clientToken,
-                        paypal: {
-                          flow: "vault",
-                        },
-                      }}
-                      onInstance={(instance) => setInstance(instance)}
-                    />
-                    <button
-                      className="p-2 rounded bg-blue-600 text-white payment-btn disabled:optional:80 hover:opacity-95 cursor-pointer"
-                      onClick={handleBookPackage}
-                      disabled={loading || !instance || !currentUser?.address}
-                    >
-                      {loading ? "Processing..." : "Book Now"}
-                    </button>
-                  </>
+                  <div id="payment-area">
+                    <div className="mt-3 border rounded p-2">
+                      <DropIn options={{ authorization: clientToken, paypal: { flow: 'vault' } }} onInstance={(inst) => setInstance(inst)} />
+                    </div>
+                    <div className="mt-3 block">
+                      <button disabled={loading || !instance || !currentUser?.address} onClick={handleBookPackage} className="w-full px-4 py-2 bg-green-700 hover:shadow-md text-white rounded-lg flex items-center justify-center gap-2">{loading ? 'Processing...' : <><FaLock /> Book Now</>}</button>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
+
+        
+        
       </div>
     </div>
   );

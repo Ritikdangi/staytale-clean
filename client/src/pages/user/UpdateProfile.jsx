@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   updateUserStart,
   updateUserSuccess,
@@ -11,9 +12,11 @@ import {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const UpdateProfile = () => {
+const UpdateProfile = ({ setActivePanelId }) => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [localLoading, setLocalLoading] = useState(false);
   const [updateProfileDetailsPanel, setUpdateProfileDetailsPanel] =
     useState(true);
   const [formData, setFormData] = useState({
@@ -66,6 +69,7 @@ const UpdateProfile = () => {
       return;
     }
     try {
+      setLocalLoading(true);
       dispatch(updateUserStart());
       const res = await fetch(`${API_URL}/api/user/update/${currentUser._id}`, {
         method: "POST",
@@ -76,22 +80,32 @@ const UpdateProfile = () => {
         credentials: "include",
       });
       const data = await res.json();
-      if (data.success === false && res.status !== 201 && res.status !== 200) {
-        dispatch(updateUserSuccess());
-        dispatch(updateUserFailure(data?.messsage));
-        alert("Session Ended! Please login again");
-        navigate("/login");
+      // handle unauthorized
+      if (!res.ok || data?.success === false) {
+        if (res.status === 401) {
+          dispatch(updateUserFailure(data?.message || "Unauthorized"));
+          alert("Session Ended! Please login again");
+          navigate("/login");
+          setLocalLoading(false);
+          return;
+        }
+        dispatch(updateUserFailure(data?.message || "Update failed"));
+        alert(data?.message || "Something went wrong!");
+        setLocalLoading(false);
         return;
       }
-      if (data.success && res.status === 201) {
-        alert(data?.message);
-        dispatch(updateUserSuccess(data?.user));
-        return;
-      }
-      alert(data?.message);
+
+      // success
+      dispatch(updateUserSuccess(data?.user));
+      alert(data?.message || "Profile updated successfully");
+      // close the edit panel and return to default panel
+      setLocalLoading(false);
+      if (typeof setActivePanelId === "function") setActivePanelId(1);
       return;
     } catch (error) {
       console.log(error);
+      dispatch(updateUserFailure(error?.message || "Network error"));
+      setLocalLoading(false);
     }
   };
 
@@ -109,6 +123,7 @@ const UpdateProfile = () => {
       return;
     }
     try {
+      setLocalLoading(true);
       dispatch(updatePassStart());
       const res = await fetch(`${API_URL}/api/user/update-password/${currentUser._id}`, {
         method: "POST",
@@ -119,22 +134,32 @@ const UpdateProfile = () => {
         credentials: "include",
       });
       const data = await res.json();
-      if (data.success === false && res.status !== 201 && res.status !== 200) {
-        dispatch(updateUserSuccess());
-        dispatch(updatePassFailure(data?.message));
-        alert("Session Ended! Please login again");
-        navigate("/login");
+      if (!res.ok || data?.success === false) {
+        if (res.status === 401) {
+          dispatch(updatePassFailure(data?.message || "Unauthorized"));
+          alert("Session Ended! Please login again");
+          navigate("/login");
+          setLocalLoading(false);
+          return;
+        }
+        dispatch(updatePassFailure(data?.message || "Password update failed"));
+        alert(data?.message || "Something went wrong!");
+        setLocalLoading(false);
         return;
       }
+
       dispatch(updatePassSuccess());
       alert(data?.message);
       setUpdatePassword({
         oldpassword: "",
         newpassword: "",
       });
+      setLocalLoading(false);
       return;
     } catch (error) {
       console.log(error);
+      dispatch(updatePassFailure(error?.message || "Network error"));
+      setLocalLoading(false);
     }
   };
 
@@ -195,19 +220,19 @@ const UpdateProfile = () => {
             />
           </div>
           <button
-            disabled={loading}
+            disabled={localLoading}
             onClick={updateUserDetails}
             className="p-2 text-white bg-slate-700 rounded hover:opacity-95"
           >
-            {loading ? "Loading..." : "Update"}
+            {localLoading ? "Loading..." : "Update"}
           </button>
           <button
-            disabled={loading}
+            disabled={localLoading}
             type="button"
             onClick={() => setUpdateProfileDetailsPanel(false)}
             className="p-2 text-white bg-red-700 rounded hover:opacity-95"
           >
-            {loading ? "Loading..." : "Change Password"}
+            {localLoading ? "Loading..." : "Change Password"}
           </button>
         </div>
       ) : (
@@ -240,14 +265,14 @@ const UpdateProfile = () => {
             />
           </div>
           <button
-            disabled={loading}
+            disabled={localLoading}
             onClick={updateUserPassword}
             className="p-2 text-white bg-slate-700 rounded hover:opacity-95"
           >
-            {loading ? "Loading..." : "Update Password"}
+            {localLoading ? "Loading..." : "Update Password"}
           </button>
           <button
-            disabled={loading}
+            disabled={localLoading}
             onClick={() => {
               setUpdateProfileDetailsPanel(true);
               setUpdatePassword({
@@ -258,7 +283,7 @@ const UpdateProfile = () => {
             type="button"
             className="p-2 text-white bg-red-700 rounded hover:opacity-95 w-24"
           >
-            {loading ? "Loading..." : "Back"}
+            {localLoading ? "Loading..." : "Back"}
           </button>
         </div>
       )}
