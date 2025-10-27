@@ -1,14 +1,19 @@
 
-StayTale - Travel & Tourism Management System" 
 
 # 🏖️ StayTale - Travel & Tourism Management System
 
 A full-stack MERN (MongoDB, Express.js, React.js, Node.js) application for travel and tourism management with admin panel, user authentication, package booking, and payment integration.
 
 ## 📸 Screenshots
-<img width="1904" height="920" alt="image" src="https://github.com/user-attachments/assets/eefc0c78-7c14-4cc6-b979-cee1a1450adb" />
-<img width="1892" height="915" alt="image" src="https://github.com/user-attachments/assets/f9a30956-5c99-47cc-812d-647a851349fc" />
-<img width="1912" height="923" alt="image" src="https://github.com/user-attachments/assets/1dc4401a-c5a6-494c-bd1b-da88a0077be7" />
+<img width="1891" height="912" alt="image" src="https://github.com/user-attachments/assets/7c9ac80e-965f-40d3-b5fb-fd3d77509b12" />
+
+<img width="1886" height="913" alt="image" src="https://github.com/user-attachments/assets/a509c8cc-cd7e-4f45-b7a1-c9d5941448b6" />
+<img width="1900" height="908" alt="image" src="https://github.com/user-attachments/assets/c890e2bf-4d61-44d2-8748-3436182f52b2" />
+<img width="1900" height="916" alt="image" src="https://github.com/user-attachments/assets/f4e0a849-adc8-4886-ae48-a7f962ff2499" />
+<img width="1899" height="921" alt="image" src="https://github.com/user-attachments/assets/45b0ed15-5db6-4f12-93a7-807e1a9a0ae1" />
+<img width="1900" height="924" alt="image" src="https://github.com/user-attachments/assets/43e2f28e-123a-4a02-960d-ac0b57476327" />
+<img width="1904" height="924" alt="image" src="https://github.com/user-attachments/assets/8517e81a-381b-48e5-aa7a-803c7f3f110c" />
+
 
 
 ## ✨ Features
