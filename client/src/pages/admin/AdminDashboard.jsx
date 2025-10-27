@@ -31,6 +31,7 @@ import AllUsers from "./AllUsers";
 import Payments from "./Payments";
 import RatingsReviews from "./RatingsReviews";
 import History from "./History";
+import CreateAdmin from "./CreateAdmin";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -346,6 +347,17 @@ const AdminDashboard = () => {
                   >
                     History
                   </button>
+                  <button
+                    className={
+                      activePanelId === 9
+                        ? "p-1 rounded-t transition-all duration-300 text-nowrap bg-blue-500 text-white"
+                        : "p-1 rounded-t transition-all duration-300 text-nowrap"
+                    }
+                    id="createAdmin"
+                    onClick={() => setActivePanelId(9)}
+                  >
+                    Create Admin
+                  </button>
                   {/* <button
                     className={
                       activePanelId === 7
@@ -376,6 +388,8 @@ const AdminDashboard = () => {
                   <History />
                 ) : activePanelId === 8 ? (
                   <AdminUpdateProfile setActivePanelId={setActivePanelId} />
+                ) : activePanelId === 9 ? (
+                  <CreateAdmin />
                 ) : (
                   <div>Page Not Found!</div>
                 )}

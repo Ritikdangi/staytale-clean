@@ -68,7 +68,8 @@ const RatingsPage = () => {
               Back
             </button>
             <hr />
-            <div className="w-full p-2 grid 2xl:grid-cols-7 xl:grid-cols-6 xlplus:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+            {/* Let RatingCard handle its own responsive layout. Remove the outer grid wrapper which caused layout conflicts. */}
+            <div className="w-full p-2">
               <RatingCard packageRatings={packageRatings} />
             </div>
           </div>

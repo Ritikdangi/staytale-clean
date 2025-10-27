@@ -205,3 +205,39 @@ export const deleteUserAccountAdmin = async (req, res) => {
     });
   }
 };
+
+// Create a new admin (admin-only)
+export const createAdmin = async (req, res) => {
+  try {
+    const { username, email, password, address, phone } = req.body;
+
+    if (!username || !email || !password || !address || !phone) {
+      return res.status(200).send({
+        success: false,
+        message: "All fields are required!",
+      });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(200).send({ success: false, message: "Email already in use" });
+    }
+
+    const hashedPassword = bcryptjs.hashSync(password, 10);
+    const newAdmin = new User({
+      username,
+      email,
+      password: hashedPassword,
+      address,
+      phone,
+      role: "admin",
+    });
+
+    await newAdmin.save();
+
+    return res.status(201).send({ success: true, message: "Admin created successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ success: false, message: "Server error creating admin" });
+  }
+};

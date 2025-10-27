@@ -6,6 +6,7 @@ import {
   updateProfilePhoto,
   updateUser,
   updateUserPassword,
+  createAdmin,
 } from "../controllers/user.controller.js";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 
@@ -35,6 +36,9 @@ router.delete("/delete/:id", requireSignIn, deleteUserAccount);
 
 //get all users
 router.get("/getAllUsers", requireSignIn, isAdmin, getAllUsers);
+
+// create admin (admin only)
+router.post("/create-admin", requireSignIn, isAdmin, createAdmin);
 
 //admin delete user accounts
 router.delete(

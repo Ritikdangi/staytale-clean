@@ -93,6 +93,7 @@ const Signup = () => {
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             onChange={handleChange}
           />
+          {/* Role selector shown but only exposes 'User' so frontend can't choose Admin */}
           <div className="flex flex-col">
             <label htmlFor="role" className="font-semibold">
               Role:
@@ -104,7 +105,6 @@ const Signup = () => {
               onChange={handleChange}
             >
               <option value="user">User</option>
-              <option value="admin">Admin</option>
             </select>
           </div>
           <button

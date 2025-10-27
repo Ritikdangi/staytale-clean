@@ -10,9 +10,12 @@ export const test = (req, res) => {
 // Signup controller
 export const signupController = async (req, res) => {
   try {
-    const { username, email, password, address, phone, role } = req.body; // Include role
+    const { username, email, password, address, phone } = req.body;
 
-    if (!username || !email || !password || !address || !phone || !role) {
+    // Force public signups to 'user' role server-side (ignore any role field from client)
+    const role = 'user';
+
+    if (!username || !email || !password || !address || !phone) {
       return res.status(200).send({
         success: false,
         message: "All fields are required!",
