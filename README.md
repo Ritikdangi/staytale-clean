@@ -4,7 +4,7 @@
 
 A full-stack MERN (MongoDB, Express.js, React.js, Node.js) application for travel and tourism management with admin panel, user authentication, package booking, and payment integration.
 
-## 📸 Screenshots
+## 📸 Screenshots(old UI)
 <img width="1891" height="912" alt="image" src="https://github.com/user-attachments/assets/7c9ac80e-965f-40d3-b5fb-fd3d77509b12" />
 
 <img width="1886" height="913" alt="image" src="https://github.com/user-attachments/assets/a509c8cc-cd7e-4f45-b7a1-c9d5941448b6" />
