@@ -17,6 +17,8 @@ import {
   FaUtensils,
   FaTrain,
   FaHiking,
+  FaImage,
+  FaTimes,
 } from "react-icons/fa";
 import Rating from "@mui/material/Rating";
 import { useSelector } from "react-redux";
@@ -59,6 +61,8 @@ const Package = () => {
   });
   const [packageRatings, setPackageRatings] = useState([]);
   const [ratingGiven, setRatingGiven] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [initialSlide, setInitialSlide] = useState(0);
 
   const getPackageData = async () => {
     try {
@@ -197,46 +201,187 @@ const Package = () => {
       )}
       {packageData && !loading && !error && (
         <div className="w-full">
-          <Swiper navigation>
-            {packageData?.packageImages.map((imageUrl, i) => (
-              <SwiperSlide key={i}>
-                {/* Use an img with object-fit to preserve aspect ratio and crisp rendering */}
-                <img
-                  src={imageUrl}
-                  alt={`package-${i}`}
-                  loading="lazy"
-                  className="w-full h-[400px] md:h-[520px] object-contain bg-slate-100 object-center"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          {/* copy button */}
-          <div className="absolute top-[13%] right-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer">
-            <FaShare
-              className="text-slate-500"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                setCopied(true);
-                setTimeout(() => {
-                  setCopied(false);
-                }, 2000);
-              }}
-            />
+          {/* Hero gallery: always show 3-photo layout; fill missing with placeholders */}
+          <div className="relative">
+            <div className="px-5 pt-5">
+              {(() => {
+                const imgs = packageData?.packageImages || [];
+                const slots = [0, 1, 2].map((idx) => ({
+                  url: imgs[idx] || null,
+                  key: idx,
+                }));
+                const extraCount = Math.max(0, imgs.length - 3);
+                const openGalleryAt = (idx) => {
+                  if (!imgs || imgs.length === 0) return;
+                  setInitialSlide(Math.min(Math.max(idx, 0), imgs.length - 1));
+                  setGalleryOpen(true);
+                };
+                const Placeholder = ({ className }) => (
+                  <div className={`flex items-center justify-center bg-slate-200 text-slate-600 ${className} rounded-xl`}>
+                    <div className="flex flex-col items-center gap-1">
+                      <FaImage className="text-2xl" />
+                      <span className="text-xs font-medium">No Image</span>
+                    </div>
+                  </div>
+                );
+                return (
+                  <>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      {/* Large primary image */}
+                      <div className="sm:col-span-2">
+                        {slots[0].url ? (
+                          <button type="button" onClick={() => openGalleryAt(0)} className="block w-full">
+                            <img
+                              src={slots[0].url}
+                              alt="primary"
+                              className="w-full h-[260px] sm:h-[420px] md:h-[480px] lg:h-[520px] object-cover rounded-xl"
+                              loading="lazy"
+                            />
+                          </button>
+                        ) : (
+                          <Placeholder className="w-full h-[260px] sm:h-[420px] md:h-[480px] lg:h-[520px]" />
+                        )}
+                      </div>
+                      {/* Right side stacked images on sm+ */}
+                      <div className="hidden sm:flex flex-col gap-4">
+                        {slots[1].url ? (
+                          <button type="button" onClick={() => openGalleryAt(1)} className="block w-full">
+                            <img
+                              src={slots[1].url}
+                              alt="secondary-1"
+                              className="w-full h-[205px] md:h-[230px] lg:h-[250px] object-cover rounded-xl"
+                              loading="lazy"
+                            />
+                          </button>
+                        ) : (
+                          <Placeholder className="w-full h-[205px] md:h-[230px] lg:h-[250px]" />
+                        )}
+                        <div className="relative">
+                          {slots[2].url ? (
+                            <button type="button" onClick={() => openGalleryAt(2)} className="block w-full">
+                              <img
+                                src={slots[2].url}
+                                alt="secondary-2"
+                                className="w-full h-[205px] md:h-[230px] lg:h-[250px] object-cover rounded-xl"
+                                loading="lazy"
+                              />
+                            </button>
+                          ) : (
+                            <Placeholder className="w-full h-[205px] md:h-[230px] lg:h-[250px]" />
+                          )}
+                          {extraCount > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => openGalleryAt(2)}
+                              className="absolute inset-0 rounded-xl bg-black/45 text-white font-semibold flex items-center justify-center"
+                            >
+                              +{extraCount} photos
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {/* On small screens, show the two extra images below in a row */}
+                      <div className="sm:hidden col-span-2 grid grid-cols-2 gap-4">
+                        {slots[1].url ? (
+                          <button type="button" onClick={() => openGalleryAt(1)} className="block w-full">
+                            <img
+                              src={slots[1].url}
+                              alt="secondary-1"
+                              className="w-full h-28 object-cover rounded-lg"
+                              loading="lazy"
+                            />
+                          </button>
+                        ) : (
+                          <Placeholder className="w-full h-28 rounded-lg" />
+                        )}
+                        <div className="relative">
+                          {slots[2].url ? (
+                            <button type="button" onClick={() => openGalleryAt(2)} className="block w-full">
+                              <img
+                                src={slots[2].url}
+                                alt="secondary-2"
+                                className="w-full h-28 object-cover rounded-lg"
+                                loading="lazy"
+                              />
+                            </button>
+                          ) : (
+                            <Placeholder className="w-full h-28 rounded-lg" />
+                          )}
+                          {extraCount > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => openGalleryAt(2)}
+                              className="absolute inset-0 rounded-lg bg-black/45 text-white text-sm font-semibold flex items-center justify-center"
+                            >
+                              +{extraCount} photos
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+
+            {/* Share button */}
+            <div className="absolute top-4 right-4 z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100/90 backdrop-blur-sm cursor-pointer shadow">
+              <FaShare
+                className="text-slate-600"
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  setCopied(true);
+                  setTimeout(() => {
+                    setCopied(false);
+                  }, 2000);
+                }}
+              />
+            </div>
+            {copied && (
+              <p className="absolute top-20 right-4 z-10 rounded-md bg-slate-100/90 px-3 py-1 shadow">
+                Link copied!
+              </p>
+            )}
+            {/* Back button */}
+            <div className="absolute top-4 left-4 z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100/90 backdrop-blur-sm cursor-pointer shadow">
+              <FaArrowLeft
+                className="text-slate-600"
+                onClick={() => {
+                  navigate("/");
+                }}
+              />
+            </div>
           </div>
-          {copied && (
-            <p className="fixed top-[23%] right-[5%] z-10 rounded-md bg-slate-100 p-2">
-              Link copied!
-            </p>
+          {/* Full gallery modal */}
+          {galleryOpen && (
+            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col">
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-white font-semibold">Gallery</span>
+                <button
+                  type="button"
+                  onClick={() => setGalleryOpen(false)}
+                  className="text-white p-2 rounded hover:bg-white/10"
+                  aria-label="Close gallery"
+                >
+                  <FaTimes className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="flex-1 px-2 pb-6">
+                <Swiper navigation initialSlide={initialSlide}>
+                  {(packageData?.packageImages || []).map((imageUrl, i) => (
+                    <SwiperSlide key={i}>
+                      <img
+                        src={imageUrl}
+                        alt={`gallery-${i}`}
+                        loading="lazy"
+                        className="w-full h-[70vh] md:h-[80vh] object-contain bg-black"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </div>
           )}
-          {/* back button */}
-          <div className="absolute top-[13%] left-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer">
-            <FaArrowLeft
-              className="text-slate-500"
-              onClick={() => {
-                navigate("/");
-              }}
-            />
-          </div>
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
             {/* Main content (left) */}
             <div className="md:col-span-2 flex flex-col gap-6">

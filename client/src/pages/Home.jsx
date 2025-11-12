@@ -84,8 +84,10 @@ const Home = () => {
       <div className="w-full flex flex-col">
         <div className="backaground_image w-full"></div>
         <div className="top-part w-full gap-2 flex flex-col">
-          <h1 className="text-white text-4xl text-center font-bold underline mb-2">
-           DREAM'S HOTELS
+          <h1 className="text-center font-extrabold tracking-wide mb-1">
+            <span className="text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-white/90 to-white/70 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]">
+              WHERE EVERY STAY BECOMES A TALE
+            </span>
           </h1>
           <h1 className="text-white text-sm text-center xsm:text-lg font-semibold">
             Make Your Travel Dream Come True With Our Amazing Packages

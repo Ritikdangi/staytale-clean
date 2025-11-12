@@ -8,11 +8,11 @@ const Header = () => {
   
   return (
     <>
-      <div className="bg-slate-400 p-4 flex justify-between items-center">
+  <div className="bg-slate-400 p-4 flex justify-between items-center">
         <Link
           to={`/`}
           aria-label="Home"
-          className="h-min text-4xl font-bold relative no-underline"
+          className="h-min top-[9px] text-2xl font-bold relative no-underline"
           style={{
             color: "transparent",
             WebkitTextStroke: "0.7px",
@@ -20,17 +20,17 @@ const Header = () => {
             display: "inline-block",
           }}
         >
-          Come
+          Tale
           <span
-            className="shadow-xl rounded-lg text-slate-700 text-2xl absolute left-1 top-[-10px] text-center"
+            className="  rounded-lg text-slate-700 text-0.9xl absolute left-0 top-[-18px] text-center "
             style={{
               WebkitTextStroke: "0",
             }}
           >
-            Dream Tours
+            Stay
           </span>
         </Link>
-        <ul className="flex flex-wrap items-center justify-center gap-10 text-white font-semibold list-none">
+        <ul className="flex flex-nowrap items-center justify-center gap-4 sm:gap-6 md:gap-10 text-white text-sm sm:text-base font-semibold list-none whitespace-nowrap overflow-x-auto">
   <li className="hover:underline hover:scale-105 transition-all duration-150">
     <Link to={`/`}>Home</Link>
   </li>
@@ -40,7 +40,7 @@ const Header = () => {
   <li className="hover:underline hover:scale-105 transition-all duration-150">
     <Link to={`/about`}>About</Link>
   </li>
-  <li className="w-10 h-10 flex items-center justify-center ml-auto">
+  <li className="w-10 h-10 flex items-center justify-center">
     {currentUser ? (
       <Link
         to={`/profile/${currentUser.role === 'admin' ? 'admin' : 'user'}`}
